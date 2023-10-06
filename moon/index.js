@@ -1,7 +1,24 @@
     var canvas = document.querySelector("#c");
 
-    canvas.addEventListener('click', () => {
-        console.log('click');
+    let pre;
+    let current;
+    let raf;
+    canvas.addEventListener('pointerdown', (e) => {
+       pre = [e.x, e.y]
+    })
+    canvas.addEventListener('pointermove', (e) => {
+        current = [e.x, e.y]
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+            if(pre){
+                drawScene(current[0] - pre[0], current[1] - pre[1])
+                pre = current
+            }
+            cancelAnimationFrame(raf)
+        })
+    })
+    canvas.addEventListener('pointerup', () => {
+        pre = undefined;
     })
     var gl = canvas.getContext("webgl");
     // 创建着色器方法，输入参数：渲染上下文，着色器类型，数据源
@@ -70,6 +87,7 @@
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
         gl.generateMipmap(gl.TEXTURE_2D);
+        drawScene()
     });
 
     // var worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
@@ -116,15 +134,10 @@
     var modelXRotationRadians = degToRad(0);
     var modelYRotationRadians = degToRad(0);
     requestAnimationFrame(drawScene)
-    function drawScene(now){
-        now *= 0.001;
-        // Subtract the previous time from the current time
-        var deltaTime = now - then;
-        // Remember the current time for the next frame.
-        then = now;
+    function drawScene(distanceX = 0, distanceY = 0){
         webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-        modelXRotationRadians += 1.2 * deltaTime;
-        modelYRotationRadians += 0.7 * deltaTime;
+        modelXRotationRadians += (2 * Math.PI * distanceY) / gl.canvas.clientHeight;
+        modelYRotationRadians += (2 * Math.PI * distanceX) / gl.canvas.clientWidth;
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -187,11 +200,9 @@
         matrix = m4.yRotate(matrix, modelYRotationRadians);
         // Set the matrix.
         gl.uniformMatrix4fv(matrixLocation, false, matrix);       // var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
-        gl.uniform1i(textureLocation, 0);
         
         var primitiveType = gl.TRIANGLES;
         var offset = 0;
         var count = 5400;
         gl.drawArrays(primitiveType, offset, count);
-        requestAnimationFrame(drawScene)
     }
