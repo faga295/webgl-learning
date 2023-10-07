@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="c" width="1000" height="1000"></canvas>
+    <script id="vertex-shader-3d" type="notjs">
+ 
+        // 一个属性变量，将会从缓冲中获取数据
+        attribute vec4 a_position;
+        attribute vec3 a_normal;
+        uniform mat4 u_matrix;
+        varying vec3 v_normal;
+        void main() {
+            // 将位置和矩阵相乘
+            gl_Position = u_matrix * a_position;
+            v_normal = a_normal;
+        }
+       
+      </script>
+       
+      <script id="fragment-shader-3d" type="notjs">
+       
+        // 片段着色器没有默认精度，所以我们需要设置一个精度
+        // mediump是一个不错的默认值，代表“medium precision”（中等精度）
+        precision mediump float;
+        uniform vec3 u_lightDirection;
+        varying vec3 v_normal;
+        void main() {
+            vec3 normal = normalize(v_normal);
+
+            float light = dot(u_lightDirection, normal);
+            gl_FragColor = vec4(0.9, 0.9, 0.9, 1);
+            gl_FragColor.rgb *= light;
+        }
+       
+    </script>
+    <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+    <script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+    <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
