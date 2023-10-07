@@ -1,50 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <canvas id="c" width="500" height="500"></canvas>
     <script id="vertex-shader-3d" type="notjs">
- 
-        // 一个属性变量，将会从缓冲中获取数据
-        attribute vec4 a_position;
-        attribute vec2 a_texcoord;
-        
-        uniform mat4 u_matrix;
-        
-        varying vec2 v_texcoord;
-        
-        void main() {
-            // 将位置和矩阵相乘
-            gl_Position = u_matrix * a_position;
-        
-            // 传递纹理坐标到片段着色器
-            v_texcoord = a_texcoord;
-        }
-       
-      </script>
-       
-      <script id="fragment-shader-3d" type="notjs">
-       
-        // 片段着色器没有默认精度，所以我们需要设置一个精度
-        // mediump是一个不错的默认值，代表“medium precision”（中等精度）
-        precision mediump float;
-        varying vec2 v_texcoord;
- 
-        // 纹理
-        uniform sampler2D u_texture;
- 
-        void main() {
-            gl_FragColor = texture2D(u_texture, v_texcoord);
-        }
-       
+
+      // 一个属性变量，将会从缓冲中获取数据
+      attribute vec4 a_position;
+      attribute vec2 a_texcoord;
+
+      uniform mat4 u_matrix;
+
+      varying vec2 v_texcoord;
+
+      void main() {
+          // 将位置和矩阵相乘
+          gl_Position = u_matrix * a_position;
+
+          // 传递纹理坐标到片段着色器
+          v_texcoord = a_texcoord;
+      }
+    </script>
+
+    <script id="fragment-shader-3d" type="notjs">
+
+      // 片段着色器没有默认精度，所以我们需要设置一个精度
+      // mediump是一个不错的默认值，代表“medium precision”（中等精度）
+      precision mediump float;
+      varying vec2 v_texcoord;
+
+      // 纹理
+      uniform sampler2D u_texture;
+
+      void main() {
+          gl_FragColor = texture2D(u_texture, v_texcoord);
+      }
     </script>
     <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
     <script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
     <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
     <script src="index.js"></script>
-</body>
+  </body>
 </html>
